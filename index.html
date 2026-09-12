@@ -1,444 +1,1234 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
-</head>
-<body>
-<x-dc>
-<helmet>
-<link rel="stylesheet" href="_ds/modernist-5f05ce3f-a8dc-4b56-8aff-59ca3df5551e/styles.css">
-<script src="_ds/modernist-5f05ce3f-a8dc-4b56-8aff-59ca3df5551e/_ds_bundle.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap">
-<style>
-  body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); }
-  a { color: var(--color-accent-700); }
-  a:hover { color: var(--color-accent-600); }
-  button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          rel="stylesheet"
+          href="_ds/modernist-5f05ce3f-a8dc-4b56-8aff-59ca3df5551e/styles.css"
+        />
+        <script src="_ds/modernist-5f05ce3f-a8dc-4b56-8aff-59ca3df5551e/_ds_bundle.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap"
+        />
+        <style>
+          body {
+            margin: 0;
+            background: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-body);
+          }
+          a {
+            color: var(--color-accent-700);
+          }
+          a:hover {
+            color: var(--color-accent-600);
+          }
+          button:focus-visible,
+          a:focus-visible,
+          input:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+          }
 
-  /* Step nav — one control, identical on all three screens. */
-  .step {
-    display: flex; align-items: center; white-space: nowrap;
-    padding: 8px 14px; border: 0; background: transparent;
-    font-family: var(--font-body); font-size: 11px; font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--color-neutral-800);
-  }
-  .step + .step { border-left: 1px solid var(--color-divider); }
-  .step-go { cursor: pointer; }
-  .step-go:hover { background: var(--color-accent-100); color: var(--color-accent-700); }
-  .step-now { background: var(--color-accent); color: var(--color-bg); cursor: default; }
-  .step-off { color: var(--color-neutral-500); cursor: not-allowed; }
+          /* Step nav — one control, identical on all three screens. */
+          .step {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            padding: 8px 14px;
+            border: 0;
+            background: transparent;
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-neutral-800);
+          }
+          .step + .step {
+            border-left: 1px solid var(--color-divider);
+          }
+          .step-go {
+            cursor: pointer;
+          }
+          .step-go:hover {
+            background: var(--color-accent-100);
+            color: var(--color-accent-700);
+          }
+          .step-now {
+            background: var(--color-accent);
+            color: var(--color-bg);
+            cursor: default;
+          }
+          .step-off {
+            color: var(--color-neutral-500);
+            cursor: not-allowed;
+          }
 
-  /* Step 1 / step 2 sit side by side, and stack in that order when narrow. */
-  .pick-layout { display: grid; grid-template-columns: minmax(0, 280px) minmax(0, 1fr); align-items: stretch; }
-  .pick-aside { border-right: 2px solid var(--color-divider); position: sticky; top: 0; align-self: start; }
-  @media (max-width: 760px) {
-    .pick-layout { grid-template-columns: minmax(0, 1fr); }
-    .pick-aside { position: static; border-right: 0; border-bottom: 2px solid var(--color-divider); }
-  }
-</style>
-</helmet>
+          /* Step 1 / step 2 sit side by side, and stack in that order when narrow. */
+          .pick-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+            align-items: stretch;
+          }
+          .pick-aside {
+            border-right: 2px solid var(--color-divider);
+            position: sticky;
+            top: 0;
+            align-self: start;
+          }
+          @media (max-width: 760px) {
+            .pick-layout {
+              grid-template-columns: minmax(0, 1fr);
+            }
+            .pick-aside {
+              position: static;
+              border-right: 0;
+              border-bottom: 2px solid var(--color-divider);
+            }
+          }
+        </style>
+      </helmet>
 
-<div style="min-height: 100vh; display: flex; flex-direction: column; font-family: var(--font-body)">
-
-  <!-- Persistent chrome: brand returns home, and the step group is the same control on all
+      <div
+        style="
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          font-family: var(--font-body);
+        "
+      >
+        <!-- Persistent chrome: brand returns home, and the step group is the same control on all
        three screens — "← Home" is always the first segment, always enabled. -->
-  <header style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-3) var(--space-6); border-bottom: 2px solid var(--color-divider); flex-wrap: wrap">
-    <button type="button" onClick="{{ goHome }}" title="Back to the start" style="display: flex; align-items: baseline; gap: var(--space-2); background: none; border: 0; padding: 0; cursor: pointer; font-family: var(--font-heading); font-weight: 900; font-size: 15px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text)" style-hover="color: var(--color-accent-700)">
-      <span style="display: inline-block; width: 12px; height: 12px; background: var(--color-accent)"></span>
-      <span>Nuzlocke Advisor</span>
-    </button>
+        <header
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-4);
+            padding: var(--space-3) var(--space-6);
+            border-bottom: 2px solid var(--color-divider);
+            flex-wrap: wrap;
+          "
+        >
+          <button
+            type="button"
+            onClick="{{ goHome }}"
+            title="Back to the start"
+            style="
+              display: flex;
+              align-items: baseline;
+              gap: var(--space-2);
+              background: none;
+              border: 0;
+              padding: 0;
+              cursor: pointer;
+              font-family: var(--font-heading);
+              font-weight: 900;
+              font-size: 15px;
+              letter-spacing: 0.14em;
+              text-transform: uppercase;
+              color: var(--color-text);
+            "
+            style-hover="color: var(--color-accent-700)"
+          >
+            <span
+              style="
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                background: var(--color-accent);
+              "
+            ></span>
+            <span>Nuzlocke Advisor</span>
+          </button>
 
-    <nav aria-label="Where you are" style="display: inline-flex; border: 1px solid var(--color-divider); max-width: 100%; flex-wrap: wrap">
-      <sc-for list="{{ steps }}" as="st" hint-placeholder-count="3">
-        <button type="button" class="{{ st.cls }}" onClick="{{ st.select }}" disabled="{{ st.disabled }}" aria-current="{{ st.current }}">{{ st.text }}</button>
-      </sc-for>
-    </nav>
-  </header>
+          <nav
+            aria-label="Where you are"
+            style="
+              display: inline-flex;
+              border: 1px solid var(--color-divider);
+              max-width: 100%;
+              flex-wrap: wrap;
+            "
+          >
+            <sc-for list="{{ steps }}" as="st" hint-placeholder-count="3">
+              <button
+                type="button"
+                class="{{ st.cls }}"
+                onClick="{{ st.select }}"
+                disabled="{{ st.disabled }}"
+                aria-current="{{ st.current }}"
+              >
+                {{ st.text }}
+              </button>
+            </sc-for>
+          </nav>
+        </header>
 
-  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
-    <main style="flex: 1; display: flex; flex-direction: column">
-      <!-- One job on this screen: get the runner into the fight picker. -->
-      <section style="padding: clamp(36px, 6vw, 80px) var(--space-6) clamp(28px, 4vw, 56px); max-width: 1180px">
-        <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; color: var(--color-accent-700); margin-bottom: var(--space-4)">For the fight you're stuck on tonight</div>
-        <h1 style="font-family: var(--font-heading); font-weight: 900; font-size: clamp(40px, 6.6vw, 86px); line-height: 0.96; letter-spacing: -0.03em; margin: 0; max-width: 17ch; text-wrap: balance">Find the team that already beat this fight.</h1>
-        <p style="font-size: clamp(16px, 1.5vw, 19px); line-height: 1.5; color: var(--color-neutral-800); max-width: 46ch; margin: var(--space-6) 0 0; text-wrap: pretty">Pick your game and the battle that keeps ending your run. You get the exact teams other Nuzlockers won it with — every mon, its level and its job in the fight.</p>
-        <div style="display: flex; align-items: center; gap: var(--space-4); margin-top: clamp(24px, 3.5vw, 40px); flex-wrap: wrap">
-          <button type="button" class="btn btn-primary" onClick="{{ goPick }}" style="font-size: 16px; padding: 15px 22px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700">Pick the fight →</button>
-          <span style="font-size: 14px; color: var(--color-neutral-700)">Two choices. No forum tabs.</span>
-        </div>
-      </section>
+        <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+          <main style="flex: 1; display: flex; flex-direction: column">
+            <!-- One job on this screen: get the runner into the fight picker. -->
+            <section
+              style="
+                padding: clamp(36px, 6vw, 80px) var(--space-6)
+                  clamp(28px, 4vw, 56px);
+                max-width: 1180px;
+              "
+            >
+              <!-- <div
+                style="
+                  font-size: 12px;
+                  letter-spacing: 0.18em;
+                  text-transform: uppercase;
+                  font-weight: 700;
+                  color: var(--color-accent-700);
+                  margin-bottom: var(--space-4);
+                "
+              >
+                For the fight you're stuck on tonight
+              </div> -->
+              <h1
+                style="
+                  font-family: var(--font-heading);
+                  font-weight: 900;
+                  font-size: clamp(40px, 6.6vw, 86px);
+                  line-height: 0.96;
+                  letter-spacing: -0.03em;
+                  margin: 0;
+                  max-width: 17ch;
+                  text-wrap: balance;
+                "
+              >
+                Find the Pokemon team that already beat this fight.
+              </h1>
+              <p
+                style="
+                  font-size: clamp(16px, 1.5vw, 19px);
+                  line-height: 1.5;
+                  color: var(--color-neutral-800);
+                  max-width: 46ch;
+                  margin: var(--space-6) 0 0;
+                  text-wrap: pretty;
+                "
+              >
+                Pick your game and the battle that keeps ending your run. You
+                get the exact teams other Nuzlockers won it with — every mon,
+                its level and its job in the fight.
+              </p>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: var(--space-4);
+                  margin-top: clamp(24px, 3.5vw, 40px);
+                  flex-wrap: wrap;
+                "
+              >
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onClick="{{ goPick }}"
+                  style="
+                    font-size: 16px;
+                    padding: 15px 22px;
+                    letter-spacing: 0.06em;
+                    text-transform: uppercase;
+                    font-weight: 700;
+                  "
+                >
+                  Pick the fight →
+                </button>
+                <!-- <span style="font-size: 14px; color: var(--color-neutral-700)">Two choices. No forum tabs.</span> -->
+              </div>
+            </section>
 
-      <div style="border-top: 2px solid var(--color-divider)"></div>
+            <div style="border-top: 2px solid var(--color-divider)"></div>
 
-      <!-- Supporting, not competing: the two steps behind the one button above. -->
-      <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2px; background: var(--color-divider)">
-        <div style="background: var(--color-bg); padding: var(--space-6); display: flex; gap: var(--space-4); align-items: flex-start">
-          <span style="font-family: var(--font-heading); font-weight: 900; font-size: 15px; color: var(--color-accent-700); letter-spacing: 0.1em; padding-top: 2px">01</span>
-          <span>
-            <span style="display: block; font-weight: 700; font-size: 16px">Choose the game, then the battle</span>
-            <span style="display: block; font-size: 14px; color: var(--color-neutral-700); margin-top: var(--space-1)">31 games and ROM hacks, gym leaders through post-game bosses.</span>
-          </span>
-        </div>
-        <div style="background: var(--color-bg); padding: var(--space-6); display: flex; gap: var(--space-4); align-items: flex-start">
-          <span style="font-family: var(--font-heading); font-weight: 900; font-size: 15px; color: var(--color-accent-700); letter-spacing: 0.1em; padding-top: 2px">02</span>
-          <span>
-            <span style="display: block; font-weight: 700; font-size: 16px">Read the teams that won it</span>
-            <span style="display: block; font-size: 14px; color: var(--color-neutral-700); margin-top: var(--space-1)">Side by side, with what the fight threw at them and how it played out.</span>
-          </span>
-        </div>
-      </section>
+            <!-- Supporting, not competing: the two steps behind the one button above. -->
+            <section
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 2px;
+                background: var(--color-divider);
+              "
+            >
+              <div
+                style="
+                  background: var(--color-bg);
+                  padding: var(--space-6);
+                  display: flex;
+                  gap: var(--space-4);
+                  align-items: flex-start;
+                "
+              >
+                <span
+                  style="
+                    font-family: var(--font-heading);
+                    font-weight: 900;
+                    font-size: 15px;
+                    color: var(--color-accent-700);
+                    letter-spacing: 0.1em;
+                    padding-top: 2px;
+                  "
+                  >01</span
+                >
+                <span>
+                  <span
+                    style="display: block; font-weight: 700; font-size: 16px"
+                    >Choose the game, then the battle</span
+                  >
+                  <span
+                    style="
+                      display: block;
+                      font-size: 14px;
+                      color: var(--color-neutral-700);
+                      margin-top: var(--space-1);
+                    "
+                    >31 games and ROM hacks, gym leaders through post-game
+                    bosses.</span
+                  >
+                </span>
+              </div>
+              <div
+                style="
+                  background: var(--color-bg);
+                  padding: var(--space-6);
+                  display: flex;
+                  gap: var(--space-4);
+                  align-items: flex-start;
+                "
+              >
+                <span
+                  style="
+                    font-family: var(--font-heading);
+                    font-weight: 900;
+                    font-size: 15px;
+                    color: var(--color-accent-700);
+                    letter-spacing: 0.1em;
+                    padding-top: 2px;
+                  "
+                  >02</span
+                >
+                <span>
+                  <span
+                    style="display: block; font-weight: 700; font-size: 16px"
+                    >Read the teams that won it</span
+                  >
+                  <span
+                    style="
+                      display: block;
+                      font-size: 14px;
+                      color: var(--color-neutral-700);
+                      margin-top: var(--space-1);
+                    "
+                    >Side by side, with what the fight threw at them and how it
+                    played out.</span
+                  >
+                </span>
+              </div>
+            </section>
 
-      <sc-if value="{{ showStats }}" hint-placeholder-val="{{ true }}">
-      <section style="border-top: 2px solid var(--color-divider); display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2px; background: var(--color-divider)">
-        <div style="background: var(--color-bg); padding: var(--space-4) var(--space-6)">
-          <div style="font-family: var(--font-heading); font-weight: 900; font-size: 24px">14,820</div>
-          <div style="font-size: 13px; color: var(--color-neutral-700)">winning runs logged</div>
-        </div>
-        <div style="background: var(--color-bg); padding: var(--space-4) var(--space-6)">
-          <div style="font-family: var(--font-heading); font-weight: 900; font-size: 24px">1,140</div>
-          <div style="font-size: 13px; color: var(--color-neutral-700)">battles covered</div>
-        </div>
-        <div style="background: var(--color-bg); padding: var(--space-4) var(--space-6)">
-          <div style="font-family: var(--font-heading); font-weight: 900; font-size: 24px">~20s</div>
-          <div style="font-size: 13px; color: var(--color-neutral-700)">from here to a plan</div>
-        </div>
-      </section>
-      </sc-if>
-    </main>
-  </sc-if>
-
-  <sc-if value="{{ isPick }}" hint-placeholder-val="{{ false }}">
-    <main class="pick-layout" style="flex: 1">
-      <aside class="pick-aside">
-        <div style="padding: var(--space-4) var(--space-6) var(--space-3); border-bottom: 1px solid var(--color-neutral-300); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; color: var(--color-neutral-700)">Step 1 — Your game</div>
-        <div style="display: flex; flex-direction: column">
-          <sc-for list="{{ games }}" as="g" hint-placeholder-count="5">
-            <button type="button" onClick="{{ g.select }}" style="{{ g.style }}" style-hover="background: var(--color-accent-100)">
-              <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0">
-                <span style="font-weight: 700; font-size: 15px">{{ g.name }}</span>
-                <span style="font-size: 12px; color: var(--color-neutral-700)">{{ g.kind }}</span>
-              </span>
-              <span style="{{ g.markStyle }}">{{ g.mark }}</span>
-            </button>
-          </sc-for>
-        </div>
-      </aside>
-
-      <section>
-        <!-- Step 2 header, search and results stay in one bounded region so the
-             search field reads as belonging to the list it filters. -->
-        <div style="padding: var(--space-4) var(--space-6) var(--space-6); border-bottom: 2px solid var(--color-divider)">
-          <div style="font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; color: var(--color-neutral-700)">Step 2 — The battle you're facing</div>
-          <h2 style="font-family: var(--font-heading); font-weight: 900; font-size: clamp(26px, 3.4vw, 40px); letter-spacing: -0.02em; margin: var(--space-2) 0 var(--space-4)">{{ gameName }}</h2>
-          <div style="display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap">
-            <input class="input" type="text" value="{{ query }}" onInput="{{ onQuery }}" placeholder="Search trainer, gym or route…" style="flex: 1 1 240px; width: auto; max-width: 420px">
-            <span style="font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; color: var(--color-neutral-700); white-space: nowrap">{{ fightCount }}</span>
-          </div>
-        </div>
-
-        <div>
-          <sc-for list="{{ fights }}" as="f" hint-placeholder-count="6">
-            <button type="button" onClick="{{ f.select }}" style="display: grid; grid-template-columns: 62px minmax(0, 1fr) auto auto 18px; gap: var(--space-4); align-items: center; width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--color-neutral-300); padding: var(--space-4) var(--space-6); cursor: pointer; font-family: var(--font-body); color: var(--color-text)" style-hover="background: var(--color-accent-100)">
-              <span style="font-family: var(--font-heading); font-weight: 900; font-size: 13px; letter-spacing: 0.08em; color: var(--color-neutral-600)">{{ f.no }}</span>
-              <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
-                <span style="font-weight: 700; font-size: 17px">{{ f.name }}</span>
-                <span style="font-size: 13px; color: var(--color-neutral-700)">{{ f.where }}</span>
-              </span>
-              <span class="tag tag-outline" style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase">{{ f.type }}</span>
-              <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--color-accent-700); white-space: nowrap">{{ f.runs }} wins</span>
-              <span style="font-family: var(--font-heading); font-weight: 900; color: var(--color-neutral-500); text-align: right">→</span>
-            </button>
-          </sc-for>
-        </div>
-
-        <sc-if value="{{ noFights }}" hint-placeholder-val="{{ false }}">
-          <div style="padding: var(--space-6); border-bottom: 1px solid var(--color-neutral-300); display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3)">
-            <div style="font-family: var(--font-heading); font-weight: 900; font-size: 20px">No battle here matches that.</div>
-            <p style="margin: 0; font-size: 14px; color: var(--color-neutral-700); max-width: 48ch">Try the trainer's name (Norman), the place (Petalburg Gym) or the type (Normal) — or switch games in step 1.</p>
-            <button type="button" class="btn btn-secondary" onClick="{{ clearQuery }}" style="letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; font-size: 13px">Show all battles</button>
-          </div>
+            <sc-if value="{{ showStats }}" hint-placeholder-val="{{ true }}">
+              <section
+                style="
+                  border-top: 2px solid var(--color-divider);
+                  display: grid;
+                  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                  gap: 2px;
+                  background: var(--color-divider);
+                "
+              >
+                <div
+                  style="
+                    background: var(--color-bg);
+                    padding: var(--space-4) var(--space-6);
+                  "
+                >
+                  <div
+                    style="
+                      font-family: var(--font-heading);
+                      font-weight: 900;
+                      font-size: 24px;
+                    "
+                  >
+                    14,820
+                  </div>
+                  <div style="font-size: 13px; color: var(--color-neutral-700)">
+                    winning runs logged
+                  </div>
+                </div>
+                <div
+                  style="
+                    background: var(--color-bg);
+                    padding: var(--space-4) var(--space-6);
+                  "
+                >
+                  <div
+                    style="
+                      font-family: var(--font-heading);
+                      font-weight: 900;
+                      font-size: 24px;
+                    "
+                  >
+                    1,140
+                  </div>
+                  <div style="font-size: 13px; color: var(--color-neutral-700)">
+                    battles covered
+                  </div>
+                </div>
+                <div
+                  style="
+                    background: var(--color-bg);
+                    padding: var(--space-4) var(--space-6);
+                  "
+                >
+                  <div
+                    style="
+                      font-family: var(--font-heading);
+                      font-weight: 900;
+                      font-size: 24px;
+                    "
+                  >
+                    ~20s
+                  </div>
+                  <div style="font-size: 13px; color: var(--color-neutral-700)">
+                    from here to a plan
+                  </div>
+                </div>
+              </section>
+            </sc-if>
+          </main>
         </sc-if>
-      </section>
-    </main>
-  </sc-if>
 
-  <sc-if value="{{ isResults }}" hint-placeholder-val="{{ false }}">
-    <main style="flex: 1">
-      <section style="padding: var(--space-4) var(--space-6) var(--space-6); border-bottom: 2px solid var(--color-divider); display: flex; gap: var(--space-6); align-items: flex-end; justify-content: space-between; flex-wrap: wrap">
-        <div style="min-width: 0">
-          <button type="button" onClick="{{ goPick }}" style="background: none; border: 0; padding: 0 0 var(--space-2); cursor: pointer; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700); font-family: var(--font-body)" style-hover="color: var(--color-accent-600)">← Change fight</button>
-          <h2 style="font-family: var(--font-heading); font-weight: 900; font-size: clamp(30px, 4.6vw, 56px); letter-spacing: -0.025em; margin: 0; line-height: 1">{{ fightName }}</h2>
-          <div style="font-size: 14px; color: var(--color-neutral-700); margin-top: var(--space-2)">{{ fightMeta }}</div>
-        </div>
-        <div>
-          <div style="font-family: var(--font-heading); font-weight: 900; font-size: 34px; line-height: 1">{{ winCount }}</div>
-          <div style="font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-neutral-700)">logged wins</div>
-        </div>
-      </section>
-
-      <!-- Why the teams below look the way they do: the threat comes first. -->
-      <section style="border-bottom: 2px solid var(--color-divider); display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2px; background: var(--color-divider)">
-        <div style="background: var(--color-bg); padding: var(--space-4) var(--space-6)">
-          <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--color-neutral-700)">Their ace</div>
-          <div style="font-family: var(--font-heading); font-weight: 900; font-size: 21px; margin-top: var(--space-1)">{{ fightAce }}</div>
-        </div>
-        <div style="background: var(--color-bg); padding: var(--space-4) var(--space-6)">
-          <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--color-neutral-700)">What ends runs here</div>
-          <p style="margin: var(--space-1) 0 0; font-size: 14px; line-height: 1.5; color: var(--color-neutral-800); max-width: 60ch; text-wrap: pretty">{{ fightThreat }}</p>
-        </div>
-      </section>
-
-      <div style="padding: var(--space-4) var(--space-6); display: flex; align-items: baseline; gap: var(--space-3); flex-wrap: wrap">
-        <h3 style="font-family: var(--font-heading); font-weight: 900; font-size: 18px; letter-spacing: 0.02em; margin: 0">Teams that beat it</h3>
-        <span style="font-size: 13px; color: var(--color-neutral-700)">{{ teamCount }} approaches, most-reported first</span>
-      </div>
-
-      <!-- 2px gutters render as grid rules, so the cards read as one set however they wrap. -->
-      <section style="display: grid; grid-template-columns: {{ teamGrid }}; gap: 2px; background: var(--color-divider); border-top: 2px solid var(--color-divider); border-bottom: 2px solid var(--color-divider)">
-        <sc-for list="{{ teams }}" as="t" hint-placeholder-count="4">
-          <article style="background: var(--color-bg); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4)">
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap">
-              <span class="tag tag-accent" style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase">{{ t.approach }}</span>
-              <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; color: var(--color-accent-700)">{{ t.attempts }}</span>
-            </div>
-            <h4 style="font-family: var(--font-heading); font-weight: 900; font-size: 21px; letter-spacing: -0.01em; margin: 0; text-wrap: pretty">{{ t.title }}</h4>
-            <div>
-              <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--color-neutral-700); padding-bottom: var(--space-2)">The six</div>
-              <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid var(--color-neutral-300)">
-                <sc-for list="{{ t.mons }}" as="m" hint-placeholder-count="6">
-                  <li style="display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: var(--space-3); align-items: center; padding: 7px 0; border-bottom: 1px solid var(--color-neutral-200); font-size: 14px">
-                    <span style="font-weight: 600; min-width: 0">{{ m.name }}</span>
-                    <span style="font-size: 12px; color: var(--color-neutral-700)">{{ m.role }}</span>
-                    <span style="font-family: var(--font-heading); font-weight: 800; font-size: 12px; color: var(--color-neutral-600)">{{ m.lv }}</span>
-                  </li>
+        <sc-if value="{{ isPick }}" hint-placeholder-val="{{ false }}">
+          <main class="pick-layout" style="flex: 1">
+            <aside class="pick-aside">
+              <div
+                style="
+                  padding: var(--space-4) var(--space-6) var(--space-3);
+                  border-bottom: 1px solid var(--color-neutral-300);
+                  font-size: 12px;
+                  letter-spacing: 0.16em;
+                  text-transform: uppercase;
+                  font-weight: 700;
+                  color: var(--color-neutral-700);
+                "
+              >
+                Step 1 — Your game
+              </div>
+              <div style="display: flex; flex-direction: column">
+                <sc-for list="{{ games }}" as="g" hint-placeholder-count="5">
+                  <button
+                    type="button"
+                    onClick="{{ g.select }}"
+                    style="{{ g.style }}"
+                    style-hover="background: var(--color-accent-100)"
+                  >
+                    <span
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1px;
+                        min-width: 0;
+                      "
+                    >
+                      <span style="font-weight: 700; font-size: 15px"
+                        >{{ g.name }}</span
+                      >
+                      <span
+                        style="font-size: 12px; color: var(--color-neutral-700)"
+                        >{{ g.kind }}</span
+                      >
+                    </span>
+                    <span style="{{ g.markStyle }}">{{ g.mark }}</span>
+                  </button>
                 </sc-for>
-              </ul>
+              </div>
+            </aside>
+
+            <section>
+              <!-- Step 2 header, search and results stay in one bounded region so the
+             search field reads as belonging to the list it filters. -->
+              <div
+                style="
+                  padding: var(--space-4) var(--space-6) var(--space-6);
+                  border-bottom: 2px solid var(--color-divider);
+                "
+              >
+                <div
+                  style="
+                    font-size: 12px;
+                    letter-spacing: 0.16em;
+                    text-transform: uppercase;
+                    font-weight: 700;
+                    color: var(--color-neutral-700);
+                  "
+                >
+                  Step 2 — The battle you're facing
+                </div>
+                <h2
+                  style="
+                    font-family: var(--font-heading);
+                    font-weight: 900;
+                    font-size: clamp(26px, 3.4vw, 40px);
+                    letter-spacing: -0.02em;
+                    margin: var(--space-2) 0 var(--space-4);
+                  "
+                >
+                  {{ gameName }}
+                </h2>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: var(--space-4);
+                    flex-wrap: wrap;
+                  "
+                >
+                  <input
+                    class="input"
+                    type="text"
+                    value="{{ query }}"
+                    onInput="{{ onQuery }}"
+                    placeholder="Search trainer, gym or route…"
+                    style="flex: 1 1 240px; width: auto; max-width: 420px"
+                  />
+                  <span
+                    style="
+                      font-size: 12px;
+                      letter-spacing: 0.1em;
+                      text-transform: uppercase;
+                      font-weight: 700;
+                      color: var(--color-neutral-700);
+                      white-space: nowrap;
+                    "
+                    >{{ fightCount }}</span
+                  >
+                </div>
+              </div>
+
+              <div>
+                <sc-for list="{{ fights }}" as="f" hint-placeholder-count="6">
+                  <button
+                    type="button"
+                    onClick="{{ f.select }}"
+                    style="
+                      display: grid;
+                      grid-template-columns: 62px minmax(0, 1fr) auto auto 18px;
+                      gap: var(--space-4);
+                      align-items: center;
+                      width: 100%;
+                      text-align: left;
+                      background: none;
+                      border: 0;
+                      border-bottom: 1px solid var(--color-neutral-300);
+                      padding: var(--space-4) var(--space-6);
+                      cursor: pointer;
+                      font-family: var(--font-body);
+                      color: var(--color-text);
+                    "
+                    style-hover="background: var(--color-accent-100)"
+                  >
+                    <span
+                      style="
+                        font-family: var(--font-heading);
+                        font-weight: 900;
+                        font-size: 13px;
+                        letter-spacing: 0.08em;
+                        color: var(--color-neutral-600);
+                      "
+                      >{{ f.no }}</span
+                    >
+                    <span
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        gap: 2px;
+                        min-width: 0;
+                      "
+                    >
+                      <span style="font-weight: 700; font-size: 17px"
+                        >{{ f.name }}</span
+                      >
+                      <span
+                        style="font-size: 13px; color: var(--color-neutral-700)"
+                        >{{ f.where }}</span
+                      >
+                    </span>
+                    <span
+                      class="tag tag-outline"
+                      style="
+                        font-size: 11px;
+                        letter-spacing: 0.08em;
+                        text-transform: uppercase;
+                      "
+                      >{{ f.type }}</span
+                    >
+                    <span
+                      style="
+                        font-size: 12px;
+                        letter-spacing: 0.08em;
+                        text-transform: uppercase;
+                        font-weight: 700;
+                        color: var(--color-accent-700);
+                        white-space: nowrap;
+                      "
+                      >{{ f.runs }} wins</span
+                    >
+                    <span
+                      style="
+                        font-family: var(--font-heading);
+                        font-weight: 900;
+                        color: var(--color-neutral-500);
+                        text-align: right;
+                      "
+                      >→</span
+                    >
+                  </button>
+                </sc-for>
+              </div>
+
+              <sc-if value="{{ noFights }}" hint-placeholder-val="{{ false }}">
+                <div
+                  style="
+                    padding: var(--space-6);
+                    border-bottom: 1px solid var(--color-neutral-300);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: var(--space-3);
+                  "
+                >
+                  <div
+                    style="
+                      font-family: var(--font-heading);
+                      font-weight: 900;
+                      font-size: 20px;
+                    "
+                  >
+                    No battle here matches that.
+                  </div>
+                  <p
+                    style="
+                      margin: 0;
+                      font-size: 14px;
+                      color: var(--color-neutral-700);
+                      max-width: 48ch;
+                    "
+                  >
+                    Try the trainer's name (Norman), the place (Petalburg Gym)
+                    or the type (Normal) — or switch games in step 1.
+                  </p>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onClick="{{ clearQuery }}"
+                    style="
+                      letter-spacing: 0.06em;
+                      text-transform: uppercase;
+                      font-weight: 700;
+                      font-size: 13px;
+                    "
+                  >
+                    Show all battles
+                  </button>
+                </div>
+              </sc-if>
+            </section>
+          </main>
+        </sc-if>
+
+        <sc-if value="{{ isResults }}" hint-placeholder-val="{{ false }}">
+          <main style="flex: 1">
+            <section
+              style="
+                padding: var(--space-4) var(--space-6) var(--space-6);
+                border-bottom: 2px solid var(--color-divider);
+                display: flex;
+                gap: var(--space-6);
+                align-items: flex-end;
+                justify-content: space-between;
+                flex-wrap: wrap;
+              "
+            >
+              <div style="min-width: 0">
+                <button
+                  type="button"
+                  onClick="{{ goPick }}"
+                  style="
+                    background: none;
+                    border: 0;
+                    padding: 0 0 var(--space-2);
+                    cursor: pointer;
+                    font-size: 12px;
+                    font-weight: 700;
+                    letter-spacing: 0.14em;
+                    text-transform: uppercase;
+                    color: var(--color-accent-700);
+                    font-family: var(--font-body);
+                  "
+                  style-hover="color: var(--color-accent-600)"
+                >
+                  ← Change fight
+                </button>
+                <h2
+                  style="
+                    font-family: var(--font-heading);
+                    font-weight: 900;
+                    font-size: clamp(30px, 4.6vw, 56px);
+                    letter-spacing: -0.025em;
+                    margin: 0;
+                    line-height: 1;
+                  "
+                >
+                  {{ fightName }}
+                </h2>
+                <div
+                  style="
+                    font-size: 14px;
+                    color: var(--color-neutral-700);
+                    margin-top: var(--space-2);
+                  "
+                >
+                  {{ fightMeta }}
+                </div>
+              </div>
+              <div>
+                <div
+                  style="
+                    font-family: var(--font-heading);
+                    font-weight: 900;
+                    font-size: 34px;
+                    line-height: 1;
+                  "
+                >
+                  {{ winCount }}
+                </div>
+                <div
+                  style="
+                    font-size: 12px;
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                    color: var(--color-neutral-700);
+                  "
+                >
+                  logged wins
+                </div>
+              </div>
+            </section>
+
+            <!-- Why the teams below look the way they do: the threat comes first. -->
+            <section
+              style="
+                border-bottom: 2px solid var(--color-divider);
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 2px;
+                background: var(--color-divider);
+              "
+            >
+              <div
+                style="
+                  background: var(--color-bg);
+                  padding: var(--space-4) var(--space-6);
+                "
+              >
+                <div
+                  style="
+                    font-size: 11px;
+                    letter-spacing: 0.14em;
+                    text-transform: uppercase;
+                    font-weight: 700;
+                    color: var(--color-neutral-700);
+                  "
+                >
+                  Their ace
+                </div>
+                <div
+                  style="
+                    font-family: var(--font-heading);
+                    font-weight: 900;
+                    font-size: 21px;
+                    margin-top: var(--space-1);
+                  "
+                >
+                  {{ fightAce }}
+                </div>
+              </div>
+              <div
+                style="
+                  background: var(--color-bg);
+                  padding: var(--space-4) var(--space-6);
+                "
+              >
+                <div
+                  style="
+                    font-size: 11px;
+                    letter-spacing: 0.14em;
+                    text-transform: uppercase;
+                    font-weight: 700;
+                    color: var(--color-neutral-700);
+                  "
+                >
+                  What ends runs here
+                </div>
+                <p
+                  style="
+                    margin: var(--space-1) 0 0;
+                    font-size: 14px;
+                    line-height: 1.5;
+                    color: var(--color-neutral-800);
+                    max-width: 60ch;
+                    text-wrap: pretty;
+                  "
+                >
+                  {{ fightThreat }}
+                </p>
+              </div>
+            </section>
+
+            <div
+              style="
+                padding: var(--space-4) var(--space-6);
+                display: flex;
+                align-items: baseline;
+                gap: var(--space-3);
+                flex-wrap: wrap;
+              "
+            >
+              <h3
+                style="
+                  font-family: var(--font-heading);
+                  font-weight: 900;
+                  font-size: 18px;
+                  letter-spacing: 0.02em;
+                  margin: 0;
+                "
+              >
+                Teams that beat it
+              </h3>
+              <span style="font-size: 13px; color: var(--color-neutral-700)"
+                >{{ teamCount }} approaches, most-reported first</span
+              >
             </div>
-            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: var(--color-neutral-800); text-wrap: pretty">{{ t.note }}</p>
-            <div style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); font-size: 12px; color: var(--color-neutral-700); border-top: 1px solid var(--color-neutral-300); padding-top: var(--space-3)">
-              <span>{{ t.author }} · {{ t.source }}</span>
-              <span>{{ t.uses }}</span>
-            </div>
-          </article>
-        </sc-for>
-      </section>
 
-      <section style="padding: var(--space-6); display: flex; gap: var(--space-4); flex-wrap: wrap; align-items: center">
-        <button type="button" class="btn btn-secondary" onClick="{{ goPick }}" style="letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; font-size: 13px">← Another fight in {{ gameShort }}</button>
-        <button type="button" class="btn btn-secondary" onClick="{{ goHome }}" style="letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; font-size: 13px">← Home</button>
-      </section>
-    </main>
-  </sc-if>
+            <!-- 2px gutters render as grid rules, so the cards read as one set however they wrap. -->
+            <section
+              style="display: grid; grid-template-columns: {{ teamGrid }}; gap: 2px; background: var(--color-divider); border-top: 2px solid var(--color-divider); border-bottom: 2px solid var(--color-divider)"
+            >
+              <sc-for list="{{ teams }}" as="t" hint-placeholder-count="4">
+                <article
+                  style="
+                    background: var(--color-bg);
+                    padding: var(--space-6);
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space-4);
+                  "
+                >
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      gap: var(--space-3);
+                      flex-wrap: wrap;
+                    "
+                  >
+                    <span
+                      class="tag tag-accent"
+                      style="
+                        font-size: 11px;
+                        letter-spacing: 0.1em;
+                        text-transform: uppercase;
+                      "
+                      >{{ t.approach }}</span
+                    >
+                    <span
+                      style="
+                        font-size: 11px;
+                        letter-spacing: 0.1em;
+                        text-transform: uppercase;
+                        font-weight: 700;
+                        color: var(--color-accent-700);
+                      "
+                      >{{ t.attempts }}</span
+                    >
+                  </div>
+                  <h4
+                    style="
+                      font-family: var(--font-heading);
+                      font-weight: 900;
+                      font-size: 21px;
+                      letter-spacing: -0.01em;
+                      margin: 0;
+                      text-wrap: pretty;
+                    "
+                  >
+                    {{ t.title }}
+                  </h4>
+                  <div>
+                    <div
+                      style="
+                        font-size: 11px;
+                        letter-spacing: 0.14em;
+                        text-transform: uppercase;
+                        font-weight: 700;
+                        color: var(--color-neutral-700);
+                        padding-bottom: var(--space-2);
+                      "
+                    >
+                      The six
+                    </div>
+                    <ul
+                      style="
+                        list-style: none;
+                        margin: 0;
+                        padding: 0;
+                        display: flex;
+                        flex-direction: column;
+                        border-top: 1px solid var(--color-neutral-300);
+                      "
+                    >
+                      <sc-for
+                        list="{{ t.mons }}"
+                        as="m"
+                        hint-placeholder-count="6"
+                      >
+                        <li
+                          style="
+                            display: grid;
+                            grid-template-columns: minmax(0, 1fr) auto auto;
+                            gap: var(--space-3);
+                            align-items: center;
+                            padding: 7px 0;
+                            border-bottom: 1px solid var(--color-neutral-200);
+                            font-size: 14px;
+                          "
+                        >
+                          <span style="font-weight: 600; min-width: 0"
+                            >{{ m.name }}</span
+                          >
+                          <span
+                            style="
+                              font-size: 12px;
+                              color: var(--color-neutral-700);
+                            "
+                            >{{ m.role }}</span
+                          >
+                          <span
+                            style="
+                              font-family: var(--font-heading);
+                              font-weight: 800;
+                              font-size: 12px;
+                              color: var(--color-neutral-600);
+                            "
+                            >{{ m.lv }}</span
+                          >
+                        </li>
+                      </sc-for>
+                    </ul>
+                  </div>
+                  <p
+                    style="
+                      margin: 0;
+                      font-size: 14px;
+                      line-height: 1.5;
+                      color: var(--color-neutral-800);
+                      text-wrap: pretty;
+                    "
+                  >
+                    {{ t.note }}
+                  </p>
+                  <div
+                    style="
+                      margin-top: auto;
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      gap: var(--space-3);
+                      font-size: 12px;
+                      color: var(--color-neutral-700);
+                      border-top: 1px solid var(--color-neutral-300);
+                      padding-top: var(--space-3);
+                    "
+                  >
+                    <span>{{ t.author }} · {{ t.source }}</span>
+                    <span>{{ t.uses }}</span>
+                  </div>
+                </article>
+              </sc-for>
+            </section>
 
-  <footer style="border-top: 2px solid var(--color-divider); padding: var(--space-4) var(--space-6); font-size: 12px; color: var(--color-neutral-600); display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap">
-    <span>Nuzlocke Advisor — community run data, fan project</span>
-    <span>Not affiliated with any game publisher</span>
-  </footer>
-</div>
-</x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;showStats&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Landing&quot;},&quot;teamColumns&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:3,&quot;min&quot;:2,&quot;max&quot;:4,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Results&quot;}}">
-const GAMES = [
-  { id: "emerald", name: "Emerald", kind: "Mainline" },
-  { id: "radicalred", name: "Radical Red", kind: "ROM hack" },
-  { id: "platinum", name: "Platinum", kind: "Mainline" },
-  { id: "renegade", name: "Renegade Platinum", kind: "ROM hack" },
-  { id: "hgss", name: "HeartGold / SoulSilver", kind: "Mainline" },
-  { id: "unbound", name: "Unbound", kind: "ROM hack" }
-];
+            <section
+              style="
+                padding: var(--space-6);
+                display: flex;
+                gap: var(--space-4);
+                flex-wrap: wrap;
+                align-items: center;
+              "
+            >
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onClick="{{ goPick }}"
+                style="
+                  letter-spacing: 0.06em;
+                  text-transform: uppercase;
+                  font-weight: 700;
+                  font-size: 13px;
+                "
+              >
+                ← Another fight in {{ gameShort }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onClick="{{ goHome }}"
+                style="
+                  letter-spacing: 0.06em;
+                  text-transform: uppercase;
+                  font-weight: 700;
+                  font-size: 13px;
+                "
+              >
+                ← Home
+              </button>
+            </section>
+          </main>
+        </sc-if>
 
-const FIGHTS = {
-  emerald: [
-    { id: "roxanne", no: "GYM 1", name: "Roxanne", where: "Rustboro Gym", type: "Rock", runs: 1284, ace: "Nosepass — Lv15", threat: "Rock Tomb drops your Speed every turn, so the fight gets worse the longer you stay in. Runners who won switched out of it instead of tanking it." },
-    { id: "brawly", no: "GYM 2", name: "Brawly", where: "Dewford Gym", type: "Fighting", runs: 1106, ace: "Makuhita — Lv18", threat: "Bulk Up stacks faster than most level-18 boxes can chip, and Vital Throw never misses. Kill it before the second boost or don't start the fight." },
-    { id: "wattson", no: "GYM 3", name: "Wattson", where: "Mauville Gym", type: "Electric", runs: 987, ace: "Manectric — Lv24", threat: "Shock Wave can't miss and Magneton's Supersonic scrambles your plan. A Ground type is the only clean answer this early." },
-    { id: "norman", no: "GYM 5", name: "Norman", where: "Petalburg Gym", type: "Normal", runs: 2410, ace: "Slaking — Lv31", threat: "Facade one-shots most of the box, but Truant gives you a free turn every other turn. Every winning team is built around spending those free turns well." },
-    { id: "winona", no: "GYM 6", name: "Winona", where: "Fortree Gym", type: "Flying", runs: 1520, ace: "Altaria — Lv33", threat: "Altaria walls the obvious Rock answer and Dragon Dance turns the fight around in two turns. Skarmory soaks the first hit before it arrives." },
-    { id: "wallace", no: "GYM 8", name: "Wallace", where: "Sootopolis Gym", type: "Water", runs: 1342, ace: "Milotic — Lv43", threat: "Recover plus Toxic outlasts anything that can't take it out in two hits. Bring real damage, not chip." },
-    { id: "steven", no: "POST", name: "Steven", where: "Meteor Falls", type: "Steel", runs: 640, ace: "Metagross — Lv45", threat: "Meteor Mash raises its Attack as it goes, and Aggron's Double-Edge punishes slow walls. Nothing here dies to neutral damage." }
-  ],
-  radicalred: [
-    { id: "brock", no: "GYM 1", name: "Brock", where: "Pewter Gym", type: "Rock", runs: 2180, ace: "Onix — Lv14", threat: "Abilities are live in this hack: Sturdy plus Rock Slide flinches means you can lose to a level-14 lead. Winning runs came in with status." },
-    { id: "rival2", no: "RIVAL", name: "Rival — Cerulean", where: "Cerulean City", type: "Mixed", runs: 1440, ace: "Wartortle — Lv20", threat: "Full type coverage on a healing item. You are not out-damaging it, so paralysis or a trapper does the work." },
-    { id: "surge", no: "GYM 3", name: "Lt. Surge", where: "Vermilion Gym", type: "Electric", runs: 1290, ace: "Raichu — Lv28", threat: "One Nasty Plot and Raichu outspeeds and one-shots the whole team. Every logged win either revenge-kills it turn one or walls it with Ground." },
-    { id: "giovanni", no: "BOSS", name: "Giovanni", where: "Silph Co.", type: "Ground", runs: 870, ace: "Nidoking — Lv42", threat: "Sheer Force Earth Power goes through anything that isn't Grass or Flying, and it's faster than it looks." }
-  ],
-  platinum: [
-    { id: "gardenia", no: "GYM 2", name: "Gardenia", where: "Eterna Gym", type: "Grass", runs: 910, ace: "Roserade — Lv22", threat: "Grass Knot punishes your heavy mons and the Poison Sting chip adds up across the gym. Fly or Fire, nothing in between." },
-    { id: "fantina", no: "GYM 3", name: "Fantina", where: "Hearthome Gym", type: "Ghost", runs: 1130, ace: "Mismagius — Lv26", threat: "Confuse Ray first, Shadow Ball after — the losses here are almost all confusion self-hits, not damage. A Persim Berry is the cheapest fix." },
-    { id: "cyrus", no: "BOSS", name: "Cyrus", where: "Distortion World", type: "Mixed", runs: 760, ace: "Weavile — Lv47", threat: "Ice Punch and Night Slash cover most of Sinnoh's best walls, and it moves first. Priority or bulk, pick one before you walk in." }
-  ],
-  renegade: [
-    { id: "roark", no: "GYM 1", name: "Roark", where: "Oreburgh Gym", type: "Rock", runs: 1810, ace: "Cranidos — Lv16", threat: "Head Smash at level 16 is a one-hit KO on everything you own. The whole fight is about not being in front of it." },
-    { id: "crasher", no: "GYM 4", name: "Crasher Wake", where: "Pastoria Gym", type: "Water", runs: 1005, ace: "Floatzel — Lv30", threat: "Ice Fang and Crunch cover your Grass and Psychic answers, and it outspeeds everything unboosted." },
-    { id: "volkner", no: "GYM 8", name: "Volkner", where: "Sunyshore Gym", type: "Electric", runs: 690, ace: "Electivire — Lv50", threat: "Motor Drive makes the obvious Electric switch-in a trap — it gets faster instead of taking the hit." }
-  ],
-  hgss: [
-    { id: "whitney", no: "GYM 3", name: "Whitney", where: "Goldenrod Gym", type: "Normal", runs: 3020, ace: "Miltank — Lv20", threat: "Rollout snowballs into a sweep and Milk Drink undoes your chip damage. The most-reported run-ender in the game." },
-    { id: "morty", no: "GYM 4", name: "Morty", where: "Ecruteak Gym", type: "Ghost", runs: 1240, ace: "Gengar — Lv25", threat: "Hypnosis into Dream Eater means a sleeping mon is usually a dead mon. Winning teams brought something that could act while asleep or kill it first." },
-    { id: "red", no: "FINAL", name: "Red", where: "Mt. Silver", type: "Mixed", runs: 980, ace: "Pikachu — Lv88", threat: "Six fully-evolved mons above your cap with no bad matchup to exploit. Every logged win is a switch-in plan written before turn one." }
-  ],
-  unbound: [
-    { id: "mirage", no: "GYM 2", name: "Mirage", where: "Fallshore Gym", type: "Psychic", runs: 720, ace: "Gardevoir — Lv31", threat: "Calm Mind plus Psychic, and Dark answers are scarce this early in Borrius. Pressure it immediately or it snowballs." },
-    { id: "chaser", no: "BOSS", name: "Chaser Duo", where: "Frozen Heights", type: "Ice", runs: 410, ace: "Weavile — Lv58", threat: "It's a double battle: spread damage hits both of your slots every turn, so the usual one-wall plan loses two mons instead of none." }
-  ]
-};
+        <footer
+          style="
+            border-top: 2px solid var(--color-divider);
+            padding: var(--space-4) var(--space-6);
+            font-size: 12px;
+            color: var(--color-neutral-600);
+            display: flex;
+            justify-content: space-between;
+            gap: var(--space-4);
+            flex-wrap: wrap;
+          "
+        >
+          <span>Nuzlocke Advisor — community run data, fan project</span>
+          <span>Not affiliated with any game publisher</span>
+        </footer>
+      </div>
+    </x-dc>
+    <script
+      type="text/x-dc"
+      data-dc-script
+      data-props='{"showStats":{"editor":"boolean","default":true,"tsType":"boolean","section":"Landing"},"teamColumns":{"editor":"int","default":3,"min":2,"max":4,"tsType":"number","section":"Results"}}'
+    >
+      const GAMES = [
+        { id: "emerald", name: "Emerald", kind: "Mainline" },
+        { id: "radicalred", name: "Radical Red", kind: "ROM hack" },
+        { id: "platinum", name: "Platinum", kind: "Mainline" },
+        { id: "renegade", name: "Renegade Platinum", kind: "ROM hack" },
+        { id: "hgss", name: "HeartGold / SoulSilver", kind: "Mainline" },
+        { id: "unbound", name: "Unbound", kind: "ROM hack" }
+      ];
 
-const TEAMS = {
-  _default: [
-    {
-      approach: "Type wall",
-      attempts: "Won 1st try",
-      uses: "412 runs",
-      title: "Let the resist-wall tank it, chip with priority",
-      mons: [
-        { name: "Gyarados", role: "Setup", lv: "Lv41" },
-        { name: "Breloom", role: "Priority", lv: "Lv40" },
-        { name: "Claydol", role: "Wall", lv: "Lv40" },
-        { name: "Manectric", role: "Speed", lv: "Lv39" },
-        { name: "Hariyama", role: "Bulk", lv: "Lv41" },
-        { name: "Swellow", role: "Cleanup", lv: "Lv40" }
-      ],
-      note: "Lead the wall, absorb the first hit, then bring in priority to finish the sweeper before it sets up. No revives needed.",
-      author: "u/slateport_runs",
-      source: "Reddit thread"
-    },
-    {
-      approach: "Status stall",
-      attempts: "Won, 1 loss",
-      uses: "296 runs",
-      title: "Paralyse the lead, out-speed everything after",
-      mons: [
-        { name: "Linoone", role: "Support", lv: "Lv38" },
-        { name: "Ludicolo", role: "Rain abuse", lv: "Lv40" },
-        { name: "Magneton", role: "Trapper", lv: "Lv39" },
-        { name: "Sableye", role: "Status", lv: "Lv37" },
-        { name: "Camerupt", role: "Nuke", lv: "Lv40" },
-        { name: "Tropius", role: "Pivot", lv: "Lv38" }
-      ],
-      note: "Spread paralysis turn one, switch out on the first crit risk. Slow team becomes the faster team by turn three.",
-      author: "NuzlockeArchive",
-      source: "Run log #2211"
-    },
-    {
-      approach: "Level cap sweep",
-      attempts: "Won 2nd try",
-      uses: "188 runs",
-      title: "One boosted sweeper, five bodies to buy setup turns",
-      mons: [
-        { name: "Slaking", role: "Sweeper", lv: "Lv41" },
-        { name: "Wailord", role: "Sponge", lv: "Lv40" },
-        { name: "Sandslash", role: "Pivot", lv: "Lv38" },
-        { name: "Kadabra", role: "Chip", lv: "Lv39" },
-        { name: "Dustox", role: "Screens", lv: "Lv37" },
-        { name: "Zangoose", role: "Backup", lv: "Lv39" }
-      ],
-      note: "Screens up first, then set up twice behind them. The sweeper takes the last four slots of the fight on its own.",
-      author: "u/deadmons",
-      source: "YouTube VOD"
-    },
-    {
-      approach: "Under-levelled",
-      attempts: "Won, 3 losses",
-      uses: "94 runs",
-      title: "Six under-cap mons, all switch-in math",
-      mons: [
-        { name: "Vibrava", role: "Immunity", lv: "Lv36" },
-        { name: "Grumpig", role: "Chip", lv: "Lv36" },
-        { name: "Whiscash", role: "Wall", lv: "Lv37" },
-        { name: "Skarmory", role: "Hazards", lv: "Lv36" },
-        { name: "Plusle", role: "Support", lv: "Lv35" },
-        { name: "Absol", role: "Revenge", lv: "Lv37" }
-      ],
-      note: "Hardest route, and the one most people report after a rough run: hazards plus immunity switch-ins, no boosting at all.",
-      author: "u/cap_respecter",
-      source: "Discord #help"
-    }
-  ]
-};
-
-class Component extends DCLogic {
-  state = { screen: "home", game: "emerald", fight: null, query: "" };
-
-  go = (screen, patch) => this.setState(Object.assign({ screen }, patch || {}));
-
-  // The header step group: same three segments on every screen, "← Home" always live.
-  buildSteps() {
-    const s = this.state;
-    const defs = [
-      { key: "home", text: "Home", back: true, enabled: true },
-      { key: "pick", text: "1 — Pick the fight", enabled: true },
-      { key: "results", text: "2 — Winning teams", enabled: !!s.fight }
-    ];
-    return defs.map(d => {
-      const current = s.screen === d.key;
-      return {
-        // The arrow only shows where it means something: somewhere to go back to.
-        text: d.back && !current ? "← " + d.text : d.text,
-        cls: "step " + (current ? "step-now" : d.enabled ? "step-go" : "step-off"),
-        current: current ? "step" : undefined,
-        disabled: !d.enabled || current,
-        select: () => { if (d.enabled && !current) this.go(d.key); }
+      const FIGHTS = {
+        emerald: [
+          { id: "roxanne", no: "GYM 1", name: "Roxanne", where: "Rustboro Gym", type: "Rock", runs: 1284, ace: "Nosepass — Lv15", threat: "Rock Tomb drops your Speed every turn, so the fight gets worse the longer you stay in. Runners who won switched out of it instead of tanking it." },
+          { id: "brawly", no: "GYM 2", name: "Brawly", where: "Dewford Gym", type: "Fighting", runs: 1106, ace: "Makuhita — Lv18", threat: "Bulk Up stacks faster than most level-18 boxes can chip, and Vital Throw never misses. Kill it before the second boost or don't start the fight." },
+          { id: "wattson", no: "GYM 3", name: "Wattson", where: "Mauville Gym", type: "Electric", runs: 987, ace: "Manectric — Lv24", threat: "Shock Wave can't miss and Magneton's Supersonic scrambles your plan. A Ground type is the only clean answer this early." },
+          { id: "norman", no: "GYM 5", name: "Norman", where: "Petalburg Gym", type: "Normal", runs: 2410, ace: "Slaking — Lv31", threat: "Facade one-shots most of the box, but Truant gives you a free turn every other turn. Every winning team is built around spending those free turns well." },
+          { id: "winona", no: "GYM 6", name: "Winona", where: "Fortree Gym", type: "Flying", runs: 1520, ace: "Altaria — Lv33", threat: "Altaria walls the obvious Rock answer and Dragon Dance turns the fight around in two turns. Skarmory soaks the first hit before it arrives." },
+          { id: "wallace", no: "GYM 8", name: "Wallace", where: "Sootopolis Gym", type: "Water", runs: 1342, ace: "Milotic — Lv43", threat: "Recover plus Toxic outlasts anything that can't take it out in two hits. Bring real damage, not chip." },
+          { id: "steven", no: "POST", name: "Steven", where: "Meteor Falls", type: "Steel", runs: 640, ace: "Metagross — Lv45", threat: "Meteor Mash raises its Attack as it goes, and Aggron's Double-Edge punishes slow walls. Nothing here dies to neutral damage." }
+        ],
+        radicalred: [
+          { id: "brock", no: "GYM 1", name: "Brock", where: "Pewter Gym", type: "Rock", runs: 2180, ace: "Onix — Lv14", threat: "Abilities are live in this hack: Sturdy plus Rock Slide flinches means you can lose to a level-14 lead. Winning runs came in with status." },
+          { id: "rival2", no: "RIVAL", name: "Rival — Cerulean", where: "Cerulean City", type: "Mixed", runs: 1440, ace: "Wartortle — Lv20", threat: "Full type coverage on a healing item. You are not out-damaging it, so paralysis or a trapper does the work." },
+          { id: "surge", no: "GYM 3", name: "Lt. Surge", where: "Vermilion Gym", type: "Electric", runs: 1290, ace: "Raichu — Lv28", threat: "One Nasty Plot and Raichu outspeeds and one-shots the whole team. Every logged win either revenge-kills it turn one or walls it with Ground." },
+          { id: "giovanni", no: "BOSS", name: "Giovanni", where: "Silph Co.", type: "Ground", runs: 870, ace: "Nidoking — Lv42", threat: "Sheer Force Earth Power goes through anything that isn't Grass or Flying, and it's faster than it looks." }
+        ],
+        platinum: [
+          { id: "gardenia", no: "GYM 2", name: "Gardenia", where: "Eterna Gym", type: "Grass", runs: 910, ace: "Roserade — Lv22", threat: "Grass Knot punishes your heavy mons and the Poison Sting chip adds up across the gym. Fly or Fire, nothing in between." },
+          { id: "fantina", no: "GYM 3", name: "Fantina", where: "Hearthome Gym", type: "Ghost", runs: 1130, ace: "Mismagius — Lv26", threat: "Confuse Ray first, Shadow Ball after — the losses here are almost all confusion self-hits, not damage. A Persim Berry is the cheapest fix." },
+          { id: "cyrus", no: "BOSS", name: "Cyrus", where: "Distortion World", type: "Mixed", runs: 760, ace: "Weavile — Lv47", threat: "Ice Punch and Night Slash cover most of Sinnoh's best walls, and it moves first. Priority or bulk, pick one before you walk in." }
+        ],
+        renegade: [
+          { id: "roark", no: "GYM 1", name: "Roark", where: "Oreburgh Gym", type: "Rock", runs: 1810, ace: "Cranidos — Lv16", threat: "Head Smash at level 16 is a one-hit KO on everything you own. The whole fight is about not being in front of it." },
+          { id: "crasher", no: "GYM 4", name: "Crasher Wake", where: "Pastoria Gym", type: "Water", runs: 1005, ace: "Floatzel — Lv30", threat: "Ice Fang and Crunch cover your Grass and Psychic answers, and it outspeeds everything unboosted." },
+          { id: "volkner", no: "GYM 8", name: "Volkner", where: "Sunyshore Gym", type: "Electric", runs: 690, ace: "Electivire — Lv50", threat: "Motor Drive makes the obvious Electric switch-in a trap — it gets faster instead of taking the hit." }
+        ],
+        hgss: [
+          { id: "whitney", no: "GYM 3", name: "Whitney", where: "Goldenrod Gym", type: "Normal", runs: 3020, ace: "Miltank — Lv20", threat: "Rollout snowballs into a sweep and Milk Drink undoes your chip damage. The most-reported run-ender in the game." },
+          { id: "morty", no: "GYM 4", name: "Morty", where: "Ecruteak Gym", type: "Ghost", runs: 1240, ace: "Gengar — Lv25", threat: "Hypnosis into Dream Eater means a sleeping mon is usually a dead mon. Winning teams brought something that could act while asleep or kill it first." },
+          { id: "red", no: "FINAL", name: "Red", where: "Mt. Silver", type: "Mixed", runs: 980, ace: "Pikachu — Lv88", threat: "Six fully-evolved mons above your cap with no bad matchup to exploit. Every logged win is a switch-in plan written before turn one." }
+        ],
+        unbound: [
+          { id: "mirage", no: "GYM 2", name: "Mirage", where: "Fallshore Gym", type: "Psychic", runs: 720, ace: "Gardevoir — Lv31", threat: "Calm Mind plus Psychic, and Dark answers are scarce this early in Borrius. Pressure it immediately or it snowballs." },
+          { id: "chaser", no: "BOSS", name: "Chaser Duo", where: "Frozen Heights", type: "Ice", runs: 410, ace: "Weavile — Lv58", threat: "It's a double battle: spread damage hits both of your slots every turn, so the usual one-wall plan loses two mons instead of none." }
+        ]
       };
-    });
-  }
 
-  renderVals() {
-    const s = this.state;
-    const game = GAMES.find(g => g.id === s.game) || GAMES[0];
-    const all = FIGHTS[s.game] || [];
-    const q = s.query.trim().toLowerCase();
-    const matched = q ? all.filter(f => (f.name + " " + f.where + " " + f.type).toLowerCase().includes(q)) : all;
-    const fights = matched.map(f => Object.assign({}, f, {
-      runs: f.runs.toLocaleString(),
-      select: () => this.go("results", { fight: f })
-    }));
-    const fight = s.fight;
+      const TEAMS = {
+        _default: [
+          {
+            approach: "Type wall",
+            attempts: "Won 1st try",
+            uses: "412 runs",
+            title: "Let the resist-wall tank it, chip with priority",
+            mons: [
+              { name: "Gyarados", role: "Setup", lv: "Lv41" },
+              { name: "Breloom", role: "Priority", lv: "Lv40" },
+              { name: "Claydol", role: "Wall", lv: "Lv40" },
+              { name: "Manectric", role: "Speed", lv: "Lv39" },
+              { name: "Hariyama", role: "Bulk", lv: "Lv41" },
+              { name: "Swellow", role: "Cleanup", lv: "Lv40" }
+            ],
+            note: "Lead the wall, absorb the first hit, then bring in priority to finish the sweeper before it sets up. No revives needed.",
+            author: "u/slateport_runs",
+            source: "Reddit thread"
+          },
+          {
+            approach: "Status stall",
+            attempts: "Won, 1 loss",
+            uses: "296 runs",
+            title: "Paralyse the lead, out-speed everything after",
+            mons: [
+              { name: "Linoone", role: "Support", lv: "Lv38" },
+              { name: "Ludicolo", role: "Rain abuse", lv: "Lv40" },
+              { name: "Magneton", role: "Trapper", lv: "Lv39" },
+              { name: "Sableye", role: "Status", lv: "Lv37" },
+              { name: "Camerupt", role: "Nuke", lv: "Lv40" },
+              { name: "Tropius", role: "Pivot", lv: "Lv38" }
+            ],
+            note: "Spread paralysis turn one, switch out on the first crit risk. Slow team becomes the faster team by turn three.",
+            author: "NuzlockeArchive",
+            source: "Run log #2211"
+          },
+          {
+            approach: "Level cap sweep",
+            attempts: "Won 2nd try",
+            uses: "188 runs",
+            title: "One boosted sweeper, five bodies to buy setup turns",
+            mons: [
+              { name: "Slaking", role: "Sweeper", lv: "Lv41" },
+              { name: "Wailord", role: "Sponge", lv: "Lv40" },
+              { name: "Sandslash", role: "Pivot", lv: "Lv38" },
+              { name: "Kadabra", role: "Chip", lv: "Lv39" },
+              { name: "Dustox", role: "Screens", lv: "Lv37" },
+              { name: "Zangoose", role: "Backup", lv: "Lv39" }
+            ],
+            note: "Screens up first, then set up twice behind them. The sweeper takes the last four slots of the fight on its own.",
+            author: "u/deadmons",
+            source: "YouTube VOD"
+          },
+          {
+            approach: "Under-levelled",
+            attempts: "Won, 3 losses",
+            uses: "94 runs",
+            title: "Six under-cap mons, all switch-in math",
+            mons: [
+              { name: "Vibrava", role: "Immunity", lv: "Lv36" },
+              { name: "Grumpig", role: "Chip", lv: "Lv36" },
+              { name: "Whiscash", role: "Wall", lv: "Lv37" },
+              { name: "Skarmory", role: "Hazards", lv: "Lv36" },
+              { name: "Plusle", role: "Support", lv: "Lv35" },
+              { name: "Absol", role: "Revenge", lv: "Lv37" }
+            ],
+            note: "Hardest route, and the one most people report after a rough run: hazards plus immunity switch-ins, no boosting at all.",
+            author: "u/cap_respecter",
+            source: "Discord #help"
+          }
+        ]
+      };
 
-    return {
-      isHome: s.screen === "home",
-      isPick: s.screen === "pick",
-      isResults: s.screen === "results",
-      steps: this.buildSteps(),
-      goHome: () => this.go("home"),
-      goPick: () => this.go("pick"),
-      gameName: game.name + " — " + game.kind,
-      gameShort: game.name,
-      query: s.query,
-      onQuery: e => this.setState({ query: e.target.value }),
-      clearQuery: () => this.setState({ query: "" }),
-      games: GAMES.map(g => {
-        const on = g.id === s.game;
-        return Object.assign({}, g, {
-          select: () => this.setState({ game: g.id, query: "" }),
-          mark: on ? "✓" : "",
-          markStyle: "font-family: var(--font-heading); font-weight: 900; font-size: 13px; color: " + (on ? "var(--color-accent-700)" : "transparent"),
-          style: "display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); text-align: left; width: 100%; cursor: pointer; font-family: var(--font-body); padding: var(--space-3) var(--space-6); border: 0; border-bottom: 1px solid var(--color-neutral-200); border-left: 4px solid " +
-            (on ? "var(--color-accent)" : "transparent") +
-            "; background: " + (on ? "var(--color-accent-100)" : "transparent") +
-            "; color: var(--color-text)"
-        });
-      }),
-      fights,
-      noFights: fights.length === 0,
-      fightCount: matched.length === all.length
-        ? all.length + " battles logged"
-        : matched.length + " of " + all.length + " battles",
-      fightName: fight ? fight.name : "",
-      fightMeta: fight ? [game.name, fight.where, fight.type + " specialist"].join("  ·  ") : "",
-      fightAce: fight ? (fight.ace || fight.type + " specialist") : "",
-      fightThreat: fight ? (fight.threat || "") : "",
-      winCount: fight ? fight.runs.toLocaleString() : "",
-      showStats: this.props.showStats ?? true,
-      teamCount: TEAMS._default.length,
-      teamGrid: "repeat(auto-fill, minmax(min(" + Math.round(1200 / (this.props.teamColumns ?? 3)) + "px, 100%), 1fr))",
-      teams: TEAMS._default
-    };
-  }
-}
-</script>
-</body>
+      class Component extends DCLogic {
+        state = { screen: "home", game: "emerald", fight: null, query: "" };
+
+        go = (screen, patch) => this.setState(Object.assign({ screen }, patch || {}));
+
+        // The header step group: same three segments on every screen, "← Home" always live.
+        buildSteps() {
+          const s = this.state;
+          const defs = [
+            { key: "home", text: "Home", back: true, enabled: true },
+            { key: "pick", text: "1 — Pick the fight", enabled: true },
+            { key: "results", text: "2 — Winning teams", enabled: !!s.fight }
+          ];
+          return defs.map(d => {
+            const current = s.screen === d.key;
+            return {
+              // The arrow only shows where it means something: somewhere to go back to.
+              text: d.back && !current ? "← " + d.text : d.text,
+              cls: "step " + (current ? "step-now" : d.enabled ? "step-go" : "step-off"),
+              current: current ? "step" : undefined,
+              disabled: !d.enabled || current,
+              select: () => { if (d.enabled && !current) this.go(d.key); }
+            };
+          });
+        }
+
+        renderVals() {
+          const s = this.state;
+          const game = GAMES.find(g => g.id === s.game) || GAMES[0];
+          const all = FIGHTS[s.game] || [];
+          const q = s.query.trim().toLowerCase();
+          const matched = q ? all.filter(f => (f.name + " " + f.where + " " + f.type).toLowerCase().includes(q)) : all;
+          const fights = matched.map(f => Object.assign({}, f, {
+            runs: f.runs.toLocaleString(),
+            select: () => this.go("results", { fight: f })
+          }));
+          const fight = s.fight;
+
+          return {
+            isHome: s.screen === "home",
+            isPick: s.screen === "pick",
+            isResults: s.screen === "results",
+            steps: this.buildSteps(),
+            goHome: () => this.go("home"),
+            goPick: () => this.go("pick"),
+            gameName: game.name + " — " + game.kind,
+            gameShort: game.name,
+            query: s.query,
+            onQuery: e => this.setState({ query: e.target.value }),
+            clearQuery: () => this.setState({ query: "" }),
+            games: GAMES.map(g => {
+              const on = g.id === s.game;
+              return Object.assign({}, g, {
+                select: () => this.setState({ game: g.id, query: "" }),
+                mark: on ? "✓" : "",
+                markStyle: "font-family: var(--font-heading); font-weight: 900; font-size: 13px; color: " + (on ? "var(--color-accent-700)" : "transparent"),
+                style: "display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); text-align: left; width: 100%; cursor: pointer; font-family: var(--font-body); padding: var(--space-3) var(--space-6); border: 0; border-bottom: 1px solid var(--color-neutral-200); border-left: 4px solid " +
+                  (on ? "var(--color-accent)" : "transparent") +
+                  "; background: " + (on ? "var(--color-accent-100)" : "transparent") +
+                  "; color: var(--color-text)"
+              });
+            }),
+            fights,
+            noFights: fights.length === 0,
+            fightCount: matched.length === all.length
+              ? all.length + " battles logged"
+              : matched.length + " of " + all.length + " battles",
+            fightName: fight ? fight.name : "",
+            fightMeta: fight ? [game.name, fight.where, fight.type + " specialist"].join("  ·  ") : "",
+            fightAce: fight ? (fight.ace || fight.type + " specialist") : "",
+            fightThreat: fight ? (fight.threat || "") : "",
+            winCount: fight ? fight.runs.toLocaleString() : "",
+            showStats: this.props.showStats ?? true,
+            teamCount: TEAMS._default.length,
+            teamGrid: "repeat(auto-fill, minmax(min(" + Math.round(1200 / (this.props.teamColumns ?? 3)) + "px, 100%), 1fr))",
+            teams: TEAMS._default
+          };
+        }
+      }
+    </script>
+  </body>
 </html>
