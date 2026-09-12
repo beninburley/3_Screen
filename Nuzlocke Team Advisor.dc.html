@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-5f05ce3f-a8dc-4b56-8aff-59ca3df5551e/styles.css">
+<script src="_ds/modernist-5f05ce3f-a8dc-4b56-8aff-59ca3df5551e/_ds_bundle.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap">
+<style>
+  body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); }
+  a { color: var(--color-accent-700); }
+  a:hover { color: var(--color-accent-600); }
+  button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; display: flex; flex-direction: column; font-family: var(--font-body)">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-4) var(--space-6); border-bottom: 2px solid var(--color-divider); flex-wrap: wrap">
+    <button type="button" onClick="{{ goHome }}" style="display: flex; align-items: baseline; gap: var(--space-2); background: none; border: 0; padding: 0; cursor: pointer; font-family: var(--font-heading); font-weight: 900; font-size: 15px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text)" style-hover="color: var(--color-accent-700)">
+      <span style="display: inline-block; width: 12px; height: 12px; background: var(--color-accent)"></span>
+      <span>Nuzlocke Advisor</span>
+    </button>
+    <nav style="display: flex; align-items: center; gap: var(--space-6); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600">
+      <button type="button" onClick="{{ goHome }}" style="background: none; border: 0; padding: 0; cursor: pointer; font: inherit; letter-spacing: inherit; text-transform: inherit; color: var(--color-neutral-700)" style-hover="color: var(--color-accent-700)">Home</button>
+      <button type="button" onClick="{{ goPick }}" style="background: none; border: 0; padding: 0; cursor: pointer; font: inherit; letter-spacing: inherit; text-transform: inherit; color: var(--color-neutral-700)" style-hover="color: var(--color-accent-700)">Pick a fight</button>
+      <span style="color: var(--color-neutral-600)">{{ crumb }}</span>
+    </nav>
+  </header>
+
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+    <main style="flex: 1; display: flex; flex-direction: column">
+      <section style="padding: clamp(40px, 7vw, 96px) var(--space-6) clamp(32px, 5vw, 64px); max-width: 1180px">
+        <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; color: var(--color-accent-700); margin-bottom: var(--space-6)">For the fight you're stuck on tonight</div>
+        <h1 style="font-family: var(--font-heading); font-weight: 900; font-size: clamp(38px, 6.4vw, 82px); line-height: 0.98; letter-spacing: -0.025em; margin: 0; max-width: 22ch; text-wrap: pretty">Pick the battle you're facing and see the exact teams other Nuzlockers already won it with.</h1>
+        <div style="display: flex; align-items: center; gap: var(--space-4); margin-top: clamp(28px, 4vw, 48px); flex-wrap: wrap">
+          <button type="button" class="btn btn-primary" onClick="{{ goPick }}" style="font-size: 15px; padding: 14px 20px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700">Pick a fight</button>
+          <span style="font-size: 14px; color: var(--color-neutral-700)">Two taps. No forum tabs.</span>
+        </div>
+      </section>
+
+      <div style="border-top: 2px solid var(--color-divider)"></div>
+
+      <sc-if value="{{ showStats }}" hint-placeholder-val="{{ true }}">
+      <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))">
+        <div style="padding: var(--space-6); border-right: 2px solid var(--color-divider)">
+          <div style="font-family: var(--font-heading); font-weight: 900; font-size: 30px">14,820</div>
+          <div style="font-size: 13px; color: var(--color-neutral-700); margin-top: var(--space-1)">winning runs logged</div>
+        </div>
+        <div style="padding: var(--space-6); border-right: 2px solid var(--color-divider)">
+          <div style="font-family: var(--font-heading); font-weight: 900; font-size: 30px">31</div>
+          <div style="font-size: 13px; color: var(--color-neutral-700); margin-top: var(--space-1)">games &amp; ROM hacks</div>
+        </div>
+        <div style="padding: var(--space-6)">
+          <div style="font-family: var(--font-heading); font-weight: 900; font-size: 30px">~20s</div>
+          <div style="font-size: 13px; color: var(--color-neutral-700); margin-top: var(--space-1)">from opening this to a plan</div>
+        </div>
+      </section>
+      </sc-if>
+    </main>
+  </sc-if>
+
+  <sc-if value="{{ isPick }}" hint-placeholder-val="{{ false }}">
+    <main style="flex: 1; display: grid; grid-template-columns: minmax(0, 280px) minmax(0, 1fr); align-items: start">
+      <aside style="border-right: 2px solid var(--color-divider); padding: var(--space-6); position: sticky; top: 0">
+        <div style="font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; color: var(--color-neutral-700); margin-bottom: var(--space-4)">1 — Game</div>
+        <div style="display: flex; flex-direction: column">
+          <sc-for list="{{ games }}" as="g" hint-placeholder-count="5">
+            <button type="button" onClick="{{ g.select }}" style="{{ g.style }}" style-hover="color: var(--color-accent-700)">
+              <span style="font-weight: 700; font-size: 15px">{{ g.name }}</span>
+              <span style="font-size: 12px; color: var(--color-neutral-700)">{{ g.kind }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </aside>
+
+      <section style="padding: var(--space-6)">
+        <div style="font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; color: var(--color-neutral-700)">2 — Battle</div>
+        <h2 style="font-family: var(--font-heading); font-weight: 900; font-size: clamp(26px, 3.4vw, 40px); letter-spacing: -0.02em; margin: var(--space-2) 0 var(--space-4)">{{ gameName }}</h2>
+        <input class="input" type="text" value="{{ query }}" onInput="{{ onQuery }}" placeholder="Search trainer, gym or route…" style="width: 100%; max-width: 520px; margin-bottom: var(--space-6)">
+
+        <div style="border-top: 2px solid var(--color-divider)">
+          <sc-for list="{{ fights }}" as="f" hint-placeholder-count="6">
+            <button type="button" onClick="{{ f.select }}" style="display: grid; grid-template-columns: 62px minmax(0, 1fr) auto auto; gap: var(--space-4); align-items: center; width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--color-neutral-300); padding: var(--space-4) var(--space-2); cursor: pointer; font-family: var(--font-body); color: var(--color-text)" style-hover="background: var(--color-accent-100)">
+              <span style="font-family: var(--font-heading); font-weight: 900; font-size: 13px; letter-spacing: 0.08em; color: var(--color-neutral-600)">{{ f.no }}</span>
+              <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+                <span style="font-weight: 700; font-size: 17px">{{ f.name }}</span>
+                <span style="font-size: 13px; color: var(--color-neutral-700)">{{ f.where }}</span>
+              </span>
+              <span class="tag tag-outline" style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase">{{ f.type }}</span>
+              <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--color-accent-700); white-space: nowrap">{{ f.runs }} wins</span>
+            </button>
+          </sc-for>
+        </div>
+      </section>
+    </main>
+  </sc-if>
+
+  <sc-if value="{{ isResults }}" hint-placeholder-val="{{ false }}">
+    <main style="flex: 1">
+      <section style="padding: var(--space-6); border-bottom: 2px solid var(--color-divider); display: flex; gap: var(--space-6); align-items: flex-end; justify-content: space-between; flex-wrap: wrap">
+        <div style="min-width: 0">
+          <button type="button" onClick="{{ goPick }}" style="background: none; border: 0; padding: 0 0 var(--space-2); cursor: pointer; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700); font-family: var(--font-body)" style-hover="color: var(--color-accent-600)">← Change fight</button>
+          <h2 style="font-family: var(--font-heading); font-weight: 900; font-size: clamp(30px, 4.6vw, 56px); letter-spacing: -0.025em; margin: 0; line-height: 1">{{ fightName }}</h2>
+          <div style="font-size: 14px; color: var(--color-neutral-700); margin-top: var(--space-2)">{{ fightMeta }}</div>
+        </div>
+        <div style="display: flex; gap: var(--space-6); align-items: flex-end">
+          <div>
+            <div style="font-family: var(--font-heading); font-weight: 900; font-size: 34px; line-height: 1">{{ winCount }}</div>
+            <div style="font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-neutral-700)">logged wins</div>
+          </div>
+        </div>
+      </section>
+
+      <section style="display: grid; grid-template-columns: {{ teamGrid }}">
+        <sc-for list="{{ teams }}" as="t" hint-placeholder-count="4">
+          <article style="padding: var(--space-6); border-right: 1px solid var(--color-neutral-300); border-bottom: 2px solid var(--color-divider); display: flex; flex-direction: column; gap: var(--space-4)">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3)">
+              <span class="tag tag-accent" style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase">{{ t.approach }}</span>
+              <span style="font-size: 12px; color: var(--color-neutral-700)">{{ t.attempts }}</span>
+            </div>
+            <h3 style="font-family: var(--font-heading); font-weight: 900; font-size: 21px; letter-spacing: -0.01em; margin: 0; text-wrap: pretty">{{ t.title }}</h3>
+            <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid var(--color-neutral-300)">
+              <sc-for list="{{ t.mons }}" as="m" hint-placeholder-count="6">
+                <li style="display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: var(--space-3); align-items: center; padding: 7px 0; border-bottom: 1px solid var(--color-neutral-200); font-size: 14px">
+                  <span style="font-weight: 600; min-width: 0">{{ m.name }}</span>
+                  <span style="font-size: 12px; color: var(--color-neutral-700)">{{ m.role }}</span>
+                  <span style="font-family: var(--font-heading); font-weight: 800; font-size: 12px; color: var(--color-neutral-600)">{{ m.lv }}</span>
+                </li>
+              </sc-for>
+            </ul>
+            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: var(--color-neutral-800); text-wrap: pretty">{{ t.note }}</p>
+            <div style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); font-size: 12px; color: var(--color-neutral-700); border-top: 1px solid var(--color-neutral-300); padding-top: var(--space-3)">
+              <span>{{ t.author }}</span>
+              <span>{{ t.source }}</span>
+            </div>
+          </article>
+        </sc-for>
+      </section>
+
+      <section style="padding: var(--space-6); display: flex; gap: var(--space-4); flex-wrap: wrap; align-items: center">
+        <button type="button" class="btn btn-secondary" onClick="{{ goPick }}" style="letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; font-size: 13px">Another fight</button>
+        <button type="button" class="btn btn-ghost" onClick="{{ goHome }}" style="letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; font-size: 13px">Back to start</button>
+      </section>
+    </main>
+  </sc-if>
+
+  <footer style="border-top: 2px solid var(--color-divider); padding: var(--space-4) var(--space-6); font-size: 12px; color: var(--color-neutral-600); display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap">
+    <span>Nuzlocke Advisor — community run data, fan project</span>
+    <span>Not affiliated with any game publisher</span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showStats&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Landing&quot;},&quot;teamColumns&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:3,&quot;min&quot;:2,&quot;max&quot;:4,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Results&quot;}}">
+const GAMES = [
+  { id: "emerald", name: "Emerald", kind: "Mainline" },
+  { id: "radicalred", name: "Radical Red", kind: "ROM hack" },
+  { id: "platinum", name: "Platinum", kind: "Mainline" },
+  { id: "renegade", name: "Renegade Platinum", kind: "ROM hack" },
+  { id: "hgss", name: "HeartGold / SoulSilver", kind: "Mainline" },
+  { id: "unbound", name: "Unbound", kind: "ROM hack" }
+];
+
+const FIGHTS = {
+  emerald: [
+    { id: "roxanne", no: "GYM 1", name: "Roxanne", where: "Rustboro Gym", type: "Rock", runs: 1284 },
+    { id: "brawly", no: "GYM 2", name: "Brawly", where: "Dewford Gym", type: "Fighting", runs: 1106 },
+    { id: "wattson", no: "GYM 3", name: "Wattson", where: "Mauville Gym", type: "Electric", runs: 987 },
+    { id: "norman", no: "GYM 5", name: "Norman", where: "Petalburg Gym", type: "Normal", runs: 2410 },
+    { id: "winona", no: "GYM 6", name: "Winona", where: "Fortree Gym", type: "Flying", runs: 1520 },
+    { id: "wallace", no: "GYM 8", name: "Wallace", where: "Sootopolis Gym", type: "Water", runs: 1342 },
+    { id: "steven", no: "POST", name: "Steven", where: "Meteor Falls", type: "Steel", runs: 640 }
+  ],
+  radicalred: [
+    { id: "brock", no: "GYM 1", name: "Brock", where: "Pewter Gym", type: "Rock", runs: 2180 },
+    { id: "rival2", no: "RIVAL", name: "Rival — Cerulean", where: "Cerulean City", type: "Mixed", runs: 1440 },
+    { id: "surge", no: "GYM 3", name: "Lt. Surge", where: "Vermilion Gym", type: "Electric", runs: 1290 },
+    { id: "giovanni", no: "BOSS", name: "Giovanni", where: "Silph Co.", type: "Ground", runs: 870 }
+  ],
+  platinum: [
+    { id: "gardenia", no: "GYM 2", name: "Gardenia", where: "Eterna Gym", type: "Grass", runs: 910 },
+    { id: "fantina", no: "GYM 3", name: "Fantina", where: "Hearthome Gym", type: "Ghost", runs: 1130 },
+    { id: "cyrus", no: "BOSS", name: "Cyrus", where: "Distortion World", type: "Mixed", runs: 760 }
+  ],
+  renegade: [
+    { id: "roark", no: "GYM 1", name: "Roark", where: "Oreburgh Gym", type: "Rock", runs: 1810 },
+    { id: "crasher", no: "GYM 4", name: "Crasher Wake", where: "Pastoria Gym", type: "Water", runs: 1005 },
+    { id: "volkner", no: "GYM 8", name: "Volkner", where: "Sunyshore Gym", type: "Electric", runs: 690 }
+  ],
+  hgss: [
+    { id: "whitney", no: "GYM 3", name: "Whitney", where: "Goldenrod Gym", type: "Normal", runs: 3020 },
+    { id: "morty", no: "GYM 4", name: "Morty", where: "Ecruteak Gym", type: "Ghost", runs: 1240 },
+    { id: "red", no: "FINAL", name: "Red", where: "Mt. Silver", type: "Mixed", runs: 980 }
+  ],
+  unbound: [
+    { id: "mirage", no: "GYM 2", name: "Mirage", where: "Fallshore Gym", type: "Psychic", runs: 720 },
+    { id: "chaser", no: "BOSS", name: "Chaser Duo", where: "Frozen Heights", type: "Ice", runs: 410 }
+  ]
+};
+
+const TEAMS = {
+  _default: [
+    {
+      approach: "Type wall",
+      attempts: "won 1st try",
+      title: "Let the resist-wall tank it, chip with priority",
+      mons: [
+        { name: "Gyarados", role: "Setup", lv: "Lv41" },
+        { name: "Breloom", role: "Priority", lv: "Lv40" },
+        { name: "Claydol", role: "Wall", lv: "Lv40" },
+        { name: "Manectric", role: "Speed", lv: "Lv39" },
+        { name: "Hariyama", role: "Bulk", lv: "Lv41" },
+        { name: "Swellow", role: "Cleanup", lv: "Lv40" }
+      ],
+      note: "Lead the wall, absorb the first hit, then bring in priority to finish the sweeper before it sets up. No revives needed.",
+      author: "u/slateport_runs",
+      source: "Reddit thread"
+    },
+    {
+      approach: "Status stall",
+      attempts: "won, 1 loss",
+      title: "Paralyse the lead, out-speed everything after",
+      mons: [
+        { name: "Linoone", role: "Support", lv: "Lv38" },
+        { name: "Ludicolo", role: "Rain abuse", lv: "Lv40" },
+        { name: "Magneton", role: "Trapper", lv: "Lv39" },
+        { name: "Sableye", role: "Status", lv: "Lv37" },
+        { name: "Camerupt", role: "Nuke", lv: "Lv40" },
+        { name: "Tropius", role: "Pivot", lv: "Lv38" }
+      ],
+      note: "Spread paralysis turn one, switch out on the first crit risk. Slow team becomes the faster team by turn three.",
+      author: "NuzlockeArchive",
+      source: "Run log #2211"
+    },
+    {
+      approach: "Level cap sweep",
+      attempts: "won 2nd try",
+      title: "One boosted sweeper, five bodies to buy setup turns",
+      mons: [
+        { name: "Slaking", role: "Sweeper", lv: "Lv41" },
+        { name: "Wailord", role: "Sponge", lv: "Lv40" },
+        { name: "Sandslash", role: "Pivot", lv: "Lv38" },
+        { name: "Kadabra", role: "Chip", lv: "Lv39" },
+        { name: "Dustox", role: "Screens", lv: "Lv37" },
+        { name: "Zangoose", role: "Backup", lv: "Lv39" }
+      ],
+      note: "Screens up first, then set up twice behind them. The sweeper takes the last four slots of the fight on its own.",
+      author: "u/deadmons",
+      source: "YouTube VOD"
+    },
+    {
+      approach: "Under-levelled",
+      attempts: "won, 3 losses",
+      title: "Six under-cap mons, all switch-in math",
+      mons: [
+        { name: "Vibrava", role: "Immunity", lv: "Lv36" },
+        { name: "Grumpig", role: "Chip", lv: "Lv36" },
+        { name: "Whiscash", role: "Wall", lv: "Lv37" },
+        { name: "Skarmory", role: "Hazards", lv: "Lv36" },
+        { name: "Plusle", role: "Support", lv: "Lv35" },
+        { name: "Absol", role: "Revenge", lv: "Lv37" }
+      ],
+      note: "Hardest route, and the one most people report after a rough run: hazards plus immunity switch-ins, no boosting at all.",
+      author: "u/cap_respecter",
+      source: "Discord #help"
+    }
+  ]
+};
+
+class Component extends DCLogic {
+  state = { screen: "home", game: "emerald", fight: null, query: "" };
+
+  go = (screen, patch) => this.setState(Object.assign({ screen }, patch || {}));
+
+  renderVals() {
+    const s = this.state;
+    const game = GAMES.find(g => g.id === s.game) || GAMES[0];
+    const all = FIGHTS[s.game] || [];
+    const q = s.query.trim().toLowerCase();
+    const fights = (q ? all.filter(f => (f.name + " " + f.where + " " + f.type).toLowerCase().includes(q)) : all)
+      .map(f => Object.assign({}, f, { runs: f.runs.toLocaleString(), select: () => this.go("results", { fight: f }) }));
+    const fight = s.fight;
+
+    const crumb = s.screen === "results" && fight
+      ? game.name + " / " + fight.name
+      : s.screen === "pick" ? game.name : "";
+
+    return {
+      isHome: s.screen === "home",
+      isPick: s.screen === "pick",
+      isResults: s.screen === "results",
+      crumb,
+      goHome: () => this.go("home"),
+      goPick: () => this.go("pick"),
+      gameName: game.name + " — " + game.kind,
+      query: s.query,
+      onQuery: e => this.setState({ query: e.target.value }),
+      games: GAMES.map(g => Object.assign({}, g, {
+        select: () => this.setState({ game: g.id, query: "" }),
+        style: "display: flex; flex-direction: column; gap: 2px; align-items: flex-start; text-align: left; width: 100%; cursor: pointer; font-family: var(--font-body); padding: var(--space-3) var(--space-3); border: 0; border-left: 4px solid " +
+          (g.id === s.game ? "var(--color-accent)" : "transparent") +
+          "; background: " + (g.id === s.game ? "var(--color-accent-100)" : "transparent") +
+          "; color: var(--color-text)"
+      })),
+      fights,
+      fightName: fight ? fight.name : "",
+      fightMeta: fight ? [game.name, fight.where, fight.type + " specialist"].join("  ·  ") : "",
+      winCount: fight ? fight.runs.toLocaleString() : "",
+      showStats: this.props.showStats ?? true,
+      teamGrid: "repeat(auto-fill, minmax(" + Math.round(1200 / (this.props.teamColumns ?? 3)) + "px, 1fr))",
+      teams: TEAMS._default
+    };
+  }
+}
+</script>
+</body>
+</html>
