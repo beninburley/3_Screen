@@ -37,7 +37,7 @@ _Need, capability, and value are kept distinct on purpose: the need is the worka
 
 Opening the live URL fresh, against the same four checks from class:
 
-- **Does the landing screen signal the capability and value before reading?** Yes — kicker line, one short headline naming the capability, and a single accent-colored CTA (`Pick the fight →`); the caption under it ("Two choices. No forum tabs.") names the exact workaround the Need statement assumes, which doubles as the value pitch.
+- **Does the landing screen signal the capability and value before reading?** Yes — one short headline naming the capability sits directly above a single accent-colored CTA (`Pick the fight →`), with nothing else in the primary sightline to read first.
 - **Does everything on landing earn its place?** The "how it works" band and the stat band sit below strong dividers, in smaller type, with no CTA of their own — they support the one primary action instead of competing with it.
 - **What groups together, and by which Gestalt principle?** On Pick the Fight, the search field sits directly under the step-2 heading and above the list it filters — **proximity** binding it to the list, not the game column. Team cards on Winning Teams share identical shape and rhythm in a grid with 2px gutters that double as dividers — **similarity** plus **common region**, signaling "these four are equal, comparable options."
 - **Do screens 2 and 3 stay on mission, and is landing always reachable?** Yes — a persistent step control (`Home / 1 — Pick the fight / 2 — Winning teams`) is identical across all three screens, with Home always enabled.
@@ -58,3 +58,10 @@ Opening the live URL fresh, against the same four checks from class:
 - **After:** [`3402765` — revision](https://github.com/beninburley/3_Screen/blob/34027655287802adc20210933b6200c910a9c1be/Nuzlocke%20Team%20Advisor.dc.html#L47-L60) — full diff: https://github.com/beninburley/3_Screen/compare/3eee261...3402765
 
 The problem in class vocabulary: the first pass had **competing calls to action** (two "pick a fight" affordances, one in nav and one in hero) and **no visual hierarchy** separating the primary capability from supporting copy — not simply "it looked generic."
+
+**Before / after (a later pass).** Even after that structural revision, the hero still carried a small kicker line above the headline and a caption next to the CTA — two extra pieces of text between the visitor and the one thing they needed to read.
+
+- **Before:** [`f6d281c`](https://github.com/beninburley/3_Screen/blob/f6d281caa3ffd6f1935c2000f36e41bb1f2ce526/index.html#L39-L45) — kicker eyebrow, headline, subhead, CTA, *and* a caption, four separate text elements competing for the same first glance.
+- **After:** [`09fe615` — "remove extra text"](https://github.com/beninburley/3_Screen/commit/09fe6150d4c6a3864721187eb4f38f8d69046ab6) — cut the kicker and the caption, leaving headline → subhead → CTA as the only things in the primary sightline, and reformatted the file for consistent indentation.
+
+This is the same problem as the first change, one layer down: **signal-to-noise in the primary sightline**. The kicker and caption weren't wrong information, but they were two more things to read before the one action the screen exists for — trimming them is a grouping/emphasis call, not a preferred-wording edit.
